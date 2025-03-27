@@ -114,3 +114,52 @@ console.log("Borobudur".replace(/[ou]/, "a"));
 
 // When a g option (for global) is added after the regular expression, all matches in the string will be replaced, not just the first.
 console.log("Borobudur".replace(/[ou]/g, "a"));
+// Dynamically creating RegExp objects
+
+// Say you want to test for the user’s name in a piece of text. You can build up a string and use the RegExp constructor on that.
+
+let name = "harry";
+let regexp = new RegExp("(^|\\s)" + name + "($|\\s)", "gi");
+console.log(regexp.test("Harry is a dodgy character."));
+
+// The search method
+
+// While the indexOf method on strings cannot be called with a regular expression, there is another method, search, that does expect a regular expression. Like indexOf, it returns the first index on which the expression was found, or -1 when it wasn’t found.
+
+console.log("  word".search(/\S/));
+console.log("  ".search(/\S/));
+
+// The lastIndex property
+
+// Those circumstances are that the regular expression must have the global (g) or sticky (y) option enabled, and the match must happen through the exec method. 
+
+let pattern = /y/g;
+pattern.lastIndex = 3;
+let matched = pattern.exec("xyzzy");
+console.log(matched.index);
+console.log(pattern.lastIndex);
+
+// The difference between the global and the sticky options is that when sticky is enabled, the match will succeed only if it starts directly at lastIndex, whereas with global, it will search ahead for a position where a match can start.
+
+let global = /abc/g;
+console.log(global.exec("xyz abc"));
+
+let sticky = /abc/y;
+console.log(sticky.exec("xyz abc"));
+
+// When using a shared regular expression value for multiple exec calls, these automatic updates to the lastIndex property can cause problems. Your regular expression might be accidentally starting at an index left over from a previous call.
+
+let digit = /\d/g;
+console.log(digit.exec("here it is: 1"));
+console.log(digit.exec("and now: 1"));
+
+//  When called with a global expression, instead of returning an array similar to that returned by exec, match will find all matches of the pattern in the string and return an array containing the matched strings.
+console.log("banana".match(/an/g));
+
+// A common thing to do is to find all the matches of a regular expression in a string. We can do this by using the matchAll method.
+let input = "A string with 3 numbers in it ....... 42 and 68.";
+// This method returns an array of match arrays. The regular expression given to matchAll must have g enabled.
+let matches = input.matchAll(/\d+/g);
+for (let match of matches){
+    console.log("Found", match[0], "at", match.index);
+}
